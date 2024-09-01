@@ -220,6 +220,7 @@ tasks.register('xmldoc', Javadoc) {
 }
 
 test {
+    systemProperties['java.io.tmpdir'] = environment['TMPDIR'] ?: (environment['TMP'] ?: environment['TEMP'])
     environment = [ 'EXPORT_TEST_TO_FILE': 'True' ]
     useJUnitPlatform()
 
