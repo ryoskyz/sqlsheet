@@ -13,11 +13,10 @@
  */
 package com.sqlsheet;
 
+import org.apache.commons.vfs2.FileObject;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Array;
@@ -51,14 +50,14 @@ class XlsConnection implements Connection {
     private static final Logger LOGGER = Logger.getLogger(XlsConnection.class.getName());
     private final Properties info;
     protected Workbook workbook;
-    protected File saveFile;
+    protected FileObject saveFile;
     private boolean writeRequired;
 
     XlsConnection(Workbook workbook, Properties info) {
         this(workbook, null, info);
     }
 
-    XlsConnection(Workbook workbook, File saveFile, Properties info) {
+    XlsConnection(Workbook workbook, FileObject saveFile, Properties info) {
         if (workbook == null) {
             throw new IllegalArgumentException();
         }
@@ -98,10 +97,9 @@ class XlsConnection implements Connection {
         if (saveFile == null || !writeRequired) {
             return;
         }
-        try {
-            OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(saveFile));
+        try (OutputStream outputStream =
+                new BufferedOutputStream(saveFile.getContent().getOutputStream())) {
             workbook.write(outputStream);
-            outputStream.close();
         } catch (IOException exception) {
             throw new SQLException("Error while persisting changes.", exception);
         }

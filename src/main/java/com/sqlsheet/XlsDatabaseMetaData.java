@@ -689,11 +689,7 @@ public class XlsDatabaseMetaData implements DatabaseMetaData {
                         '_',
                         GlobPattern.HANDLE_ESCAPES);
 
-        String fileName = connection.saveFile.getName();
-        int indexOf = fileName.indexOf('.');
-        if (indexOf >= 0) {
-            fileName = fileName.substring(0, indexOf);
-        }
+        String fileName = connection.saveFile.getName().getBaseName();
 
         if ((schemaPattern == null || schemaMatcher.matches(fileName))
                 && (types == null || Arrays.asList(types).contains("TABLE"))) {
@@ -725,11 +721,7 @@ public class XlsDatabaseMetaData implements DatabaseMetaData {
                         new Object[] {"TABLE_SCHEM", String.class},
                         new Object[] {"TABLE_CATALOG", String.class});
 
-        String fileName = connection.saveFile.getName();
-        int indexOf = fileName.indexOf('.');
-        if (indexOf >= 0) {
-            fileName = fileName.substring(0, indexOf);
-        }
+        String fileName = connection.saveFile.getName().getBaseName();
         resultSet.addRow(fileName, null);
 
         return resultSet;
@@ -781,11 +773,7 @@ public class XlsDatabaseMetaData implements DatabaseMetaData {
                         new Object[] {"IS_AUTOINCREMENT", String.class},
                         new Object[] {"IS_GENERATEDCOLUMN", String.class});
 
-        String fileName = connection.saveFile.getName();
-        int indexOf = fileName.indexOf('.');
-        if (indexOf >= 0) {
-            fileName = fileName.substring(0, indexOf);
-        }
+        String fileName = connection.saveFile.getName().getBaseName();
 
         int firstSheetRowOffset = connection.getInt(XlsDriver.HEADLINE, DEFAULT_HEADLINE);
         int firstSheetColOffset = connection.getInt(XlsDriver.FIRST_COL, DEFAULT_FIRST_COL);
