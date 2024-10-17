@@ -36,15 +36,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author are
  */
 public class ResultSetImpl implements ResultSet {
-    private final ArrayList<Object[]> rowData = new ArrayList<>();
-    private final LinkedList<String> columnNames = new LinkedList<>();
-    private final LinkedList<Class<?>> columnClasses = new LinkedList<>();
+    private final List<Object[]> rowData = new ArrayList<>();
+    private final List<String> columnNames = new LinkedList<>();
+    private final List<Class<?>> columnClasses = new LinkedList<>();
     private boolean isClosed;
     private Object value = null;
     private int r = -1;
@@ -238,6 +239,7 @@ public class ResultSetImpl implements ResultSet {
         }
     }
 
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
         return getBigDecimal(columnIndex).setScale(scale);
@@ -308,6 +310,7 @@ public class ResultSetImpl implements ResultSet {
         // Templates.
     }
 
+    @Deprecated
     @Override
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
         throw new UnsupportedOperationException(
@@ -402,6 +405,7 @@ public class ResultSetImpl implements ResultSet {
         }
     }
 
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
         return getBigDecimal(columnLabel).setScale(scale);
@@ -451,6 +455,7 @@ public class ResultSetImpl implements ResultSet {
         // Templates.
     }
 
+    @Deprecated
     @Override
     public InputStream getUnicodeStream(String columnLabel) throws SQLException {
         throw new UnsupportedOperationException(

@@ -360,6 +360,7 @@ public class XlsPreparedStatement extends XlsStatement implements PreparedStatem
         nyi();
     }
 
+    @Deprecated
     public void setUnicodeStream(int arg0, InputStream arg1, int arg2) throws SQLException {
         nyi();
     }

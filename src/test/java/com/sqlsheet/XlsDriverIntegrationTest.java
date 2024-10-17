@@ -25,6 +25,7 @@ public class XlsDriverIntegrationTest {
     private static final String TEST_EXTRACT_XLSX_FILE = "extracttest.xlsx";
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExctractFromXls() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("filePath", dumpExcelToTempFile(TEST_EXTRACT_XLS_FILE, ".xls").toString());
@@ -45,6 +46,7 @@ public class XlsDriverIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadToXls() throws Exception {
         List<ResultMock> pojo = new ArrayList<ResultMock>();
         pojo.add(new ResultMock(1, "test1", new Date()));
@@ -55,14 +57,14 @@ public class XlsDriverIntegrationTest {
         xls.deleteOnExit();
 
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("filePath", xls.toURL());
+        params.put("filePath", xls.toURI().toURL());
         params.put("params", params);
         params.put("POJO", pojo);
 
         // Load pojo into excel
         Map<String, Object> results = executeEtlScriptWithResult(
                 ClassLoader.getSystemResource(LOAD_XLS_SCRIPT_FILE), params);
-        params.put("filePath", xls.toURL());
+        params.put("filePath", xls.toURI().toURL());
         params.put("params", params);
 
         // script must fill results parameter
@@ -75,6 +77,7 @@ public class XlsDriverIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExctractFromXlsx() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("filePath", dumpExcelToTempFile(TEST_EXTRACT_XLSX_FILE, ".xlsx").toString());
@@ -88,6 +91,7 @@ public class XlsDriverIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadToXlsx() throws Exception {
         List<ResultMock> pojo = new ArrayList<ResultMock>();
         pojo.add(new ResultMock(1, "test1", new Date()));
@@ -98,7 +102,7 @@ public class XlsDriverIntegrationTest {
         xls.deleteOnExit();
 
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("filePath", xls.toURL().toString());
+        params.put("filePath", xls.toURI().toURL().toString());
         params.put("params", params);
         params.put("POJO", pojo);
 
@@ -107,7 +111,7 @@ public class XlsDriverIntegrationTest {
                 ClassLoader.getSystemResource(LOAD_XLS_SCRIPT_FILE), params);
 
         // Extract data from loaded data
-        params.put("filePath", xls.toURL().toString());
+        params.put("filePath", xls.toURI().toURL().toString());
         params.put("params", params);
         // script must fill results parameter
         Map<String, Object> results1 = executeEtlScriptWithResult(
@@ -124,7 +128,7 @@ public class XlsDriverIntegrationTest {
             File xlsFile = File.createTempFile("tmp.", format);
             FileUtils.writeByteArrayToFile(xlsFile,
                     IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream(resource)));
-            url = xlsFile.toURL();
+            url = xlsFile.toURI().toURL();
             xlsFile.deleteOnExit();
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);

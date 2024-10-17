@@ -44,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A XLS -> CSV processor, that uses the MissingRecordAware EventModel code to ensure it outputs all
@@ -59,7 +60,7 @@ public class XLS2CSVmra implements HSSFListener {
      * Should we output the formula, or the value it has?
      */
     private final boolean outputFormulaValues = true;
-    private final ArrayList boundSheetRecords = new ArrayList();
+    private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
     String currentSheetName;
     private int lastRowNumber;
     private int lastColumnNumber;
@@ -143,7 +144,7 @@ public class XLS2CSVmra implements HSSFListener {
 
         switch (record.getSid()) {
             case BoundSheetRecord.sid:
-                boundSheetRecords.add(record);
+                boundSheetRecords.add((BoundSheetRecord) record);
                 break;
             case BOFRecord.sid:
                 BOFRecord br = (BOFRecord) record;

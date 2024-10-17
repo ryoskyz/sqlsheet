@@ -24,7 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractXlsSheetIterator implements Iterable<Object>, Iterator<Object> {
+public abstract class AbstractXlsSheetIterator
+        implements Iterable<List<AbstractXlsSheetIterator.CellValueHolder>>,
+        Iterator<List<AbstractXlsSheetIterator.CellValueHolder>> {
 
     private URL fileName;
     private String sheetName;
@@ -52,7 +54,7 @@ public abstract class AbstractXlsSheetIterator implements Iterable<Object>, Iter
 
     protected abstract void onClose() throws SQLException;
 
-    public Iterator<Object> iterator() {
+    public Iterator<List<CellValueHolder>> iterator() {
         return this;
     }
 
@@ -60,7 +62,7 @@ public abstract class AbstractXlsSheetIterator implements Iterable<Object>, Iter
         return getRowValues().get(getCurrentIteratorRowIndex() + 1) != null;
     }
 
-    public Object next() {
+    public List<CellValueHolder> next() {
         try {
             getRowValues().remove(getCurrentIteratorRowIndex());
             setCurrentIteratorRowIndex(getCurrentIteratorRowIndex() + 1);

@@ -333,6 +333,7 @@ public class XlsStreamPreparedStatement extends XlsStreamStatement implements Pr
         nyi();
     }
 
+    @Deprecated
     public void setUnicodeStream(int arg0, InputStream arg1, int arg2) throws SQLException {
         nyi();
     }

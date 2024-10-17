@@ -39,6 +39,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -145,7 +146,7 @@ public class Issue13_NPEOnEmptyCells {
             rs = st.executeQuery("SELECT * from TestSheet1");
             int r = 0;
             while (rs.next()) {
-                ArrayList<Object> values = new ArrayList<>();
+                List<Object> values = new ArrayList<>();
 
                 for (int c = 0; c < 4; c++) {
                     String columnLabel = columnNames[c] + (c + 1);

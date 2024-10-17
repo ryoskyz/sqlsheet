@@ -514,12 +514,12 @@ public class XlsResultSet implements ResultSet {
 
     @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        return (T) getObject(columnIndex);
+        return type.cast(getObject(columnIndex));
     }
 
     @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        return (T) getObject(columnLabel);
+        return type.cast(getObject(columnLabel));
     }
 
     @Override
@@ -1147,12 +1147,14 @@ public class XlsResultSet implements ResultSet {
         return getBigDecimal(columnIndex);
     }
 
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
         BigDecimal d = getBigDecimal(columnIndex);
         return d != null ? d.setScale(scale) : null;
     }
 
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
         BigDecimal d = getBigDecimal(columnLabel);
@@ -1328,10 +1330,12 @@ public class XlsResultSet implements ResultSet {
         throw nyi();
     }
 
+    @Deprecated
     public InputStream getUnicodeStream(int columnIndex) {
         throw nyi();
     }
 
+    @Deprecated
     public InputStream getUnicodeStream(String jdbcColumn) {
         throw nyi();
     }

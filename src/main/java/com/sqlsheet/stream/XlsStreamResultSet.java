@@ -124,12 +124,14 @@ public class XlsStreamResultSet implements ResultSet {
         return getBigDecimal(columnIndex);
     }
 
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
         BigDecimal d = getBigDecimal(columnIndex);
         return d != null ? d.setScale(scale) : null;
     }
 
+    @Deprecated
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
         BigDecimal d = getBigDecimal(columnLabel);
@@ -349,6 +351,7 @@ public class XlsStreamResultSet implements ResultSet {
                                 .doubleValue();
                     }
                 case FORMULA:
+                    // fall through
                 default:
                     return null;
             }
@@ -365,12 +368,12 @@ public class XlsStreamResultSet implements ResultSet {
 
     @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        return (T) getObject(columnIndex);
+        return type.cast(getObject(columnIndex));
     }
 
     @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        return (T) getObject(columnLabel);
+        return type.cast(getObject(columnLabel));
     }
 
     @Override
@@ -466,6 +469,7 @@ public class XlsStreamResultSet implements ResultSet {
                     }
                 case FORMULA:
                     nyi();
+                    // fall through
                 default:
                     return null;
             }
@@ -790,10 +794,12 @@ public class XlsStreamResultSet implements ResultSet {
         throw nyi();
     }
 
+    @Deprecated
     public InputStream getUnicodeStream(int jdbcColumn) throws SQLException {
         throw nyi();
     }
 
+    @Deprecated
     public InputStream getUnicodeStream(String jdbcColumn) throws SQLException {
         throw nyi();
     }

@@ -14,9 +14,7 @@ public class XlsxSheetIteratorTest {
                 new XlsxSheetIterator(ClassLoader.getSystemResource("test.xlsx"), "2009");
         Assertions.assertEquals(3, xlsSheet.getColumns().size());
         long counter = 0L;
-        for (Object o : xlsSheet) {
-            List<XlsSheetIterator.CellValueHolder> rowValues =
-                    (List<XlsSheetIterator.CellValueHolder>) o;
+        for (List<XlsSheetIterator.CellValueHolder> rowValues : xlsSheet) {
             Assertions.assertEquals(3, rowValues.size());
             for (XlsSheetIterator.CellValueHolder value : rowValues) {
                 Assertions.assertNotNull(value.stringValue);
@@ -34,9 +32,7 @@ public class XlsxSheetIteratorTest {
                 new XlsxSheetIterator(ClassLoader.getSystemResource("big-grid.xlsx"), "Big Grid");
         Assertions.assertEquals(20, xlsSheet.getColumns().size());
         long counter = 0L;
-        for (Object o : xlsSheet) {
-            List<XlsSheetIterator.CellValueHolder> rowValues =
-                    (List<XlsSheetIterator.CellValueHolder>) o;
+        for (List<XlsSheetIterator.CellValueHolder> rowValues : xlsSheet) {
             Assertions.assertEquals(20, rowValues.size());
             for (XlsSheetIterator.CellValueHolder value : rowValues) {
                 Assertions.assertNotNull(value.stringValue);
@@ -56,9 +52,7 @@ public class XlsxSheetIteratorTest {
                 new XlsxSheetIterator(ClassLoader.getSystemResource("bug3.xlsx"), "bug3");
         Assertions.assertEquals(13, xlsSheet.getColumns().size());
         long counter = 0L;
-        for (Object o : xlsSheet) {
-            List<XlsSheetIterator.CellValueHolder> rowValues =
-                    (List<XlsSheetIterator.CellValueHolder>) o;
+        for (List<XlsSheetIterator.CellValueHolder> rowValues : xlsSheet) {
             Assertions.assertEquals(13, rowValues.size());
             // for(XlsSheetIterator.CellValueHolder value : rowValues){
             // Assert.assertNotNull(value.stringValue);
