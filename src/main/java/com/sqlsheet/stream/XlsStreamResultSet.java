@@ -34,6 +34,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Statement;
@@ -393,12 +394,12 @@ public class XlsStreamResultSet implements ResultSet {
     }
 
     @Override
-    public Timestamp getTimestamp(int columnIndex, Calendar cal) {
+    public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
         throw nyi();
     }
 
     @Override
-    public Timestamp getTimestamp(String jdbcColumn, Calendar cal) {
+    public Timestamp getTimestamp(String jdbcColumn, Calendar cal) throws SQLException {
         throw nyi();
     }
 
@@ -468,8 +469,7 @@ public class XlsStreamResultSet implements ResultSet {
                         return bd.toPlainString();
                     }
                 case FORMULA:
-                    nyi();
-                    // fall through
+                    throw nyi();
                 default:
                     return null;
             }
@@ -649,8 +649,8 @@ public class XlsStreamResultSet implements ResultSet {
         throw nyi();
     }
 
-    private IllegalStateException nyi() {
-        return new IllegalStateException("NYI");
+    private SQLException nyi() {
+        return new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     public void cancelRowUpdates() throws SQLException {

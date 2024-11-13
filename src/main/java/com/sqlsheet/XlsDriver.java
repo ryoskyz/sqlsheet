@@ -33,6 +33,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -257,7 +258,7 @@ public class XlsDriver implements java.sql.Driver {
         return 0;
     }
 
-    public Logger getParentLogger() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 }

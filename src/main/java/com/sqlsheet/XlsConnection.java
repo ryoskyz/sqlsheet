@@ -29,6 +29,7 @@ import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
@@ -320,7 +321,7 @@ class XlsConnection implements Connection {
     }
 
     private void nyi() throws SQLException {
-        throw new SQLException("NYI");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     public <T> T unwrap(Class<T> iface) throws SQLException {
@@ -342,22 +343,22 @@ class XlsConnection implements Connection {
     }
 
     public String getSchema() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     public void setSchema(String string) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     public void abort(Executor exctr) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     public void setNetworkTimeout(Executor exctr, int i) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     public int getNetworkTimeout() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 }

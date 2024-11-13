@@ -32,6 +32,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.RowIdLifetime;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -183,7 +184,7 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public String getSQLKeywords() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -428,12 +429,12 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public boolean supportsPositionedDelete() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public boolean supportsPositionedUpdate() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -655,13 +656,13 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getProcedures(String string, String string1, String string2)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getProcedureColumns(
             String string, String string1, String string2, String string3) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -974,25 +975,25 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getColumnPrivileges(
             String string, String string1, String string2, String string3) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getTablePrivileges(String string, String string1, String string2)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getBestRowIdentifier(
             String string, String string1, String string2, int i, boolean bln) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getVersionColumns(String string, String string1, String string2)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1220,7 +1221,7 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public boolean supportsResultSetType(int i) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1260,17 +1261,17 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public boolean updatesAreDetected(int i) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public boolean deletesAreDetected(int i) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public boolean insertsAreDetected(int i) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1281,7 +1282,7 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getUDTs(String string, String string1, String string2, int[] ints)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1312,19 +1313,19 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getSuperTypes(String string, String string1, String string2)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getSuperTables(String string, String string1, String string2)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getAttributes(String string, String string1, String string2, String string3)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1359,12 +1360,12 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public int getSQLStateType() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public boolean locatorsUpdateCopy() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1374,7 +1375,7 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public RowIdLifetime getRowIdLifetime() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1394,26 +1395,26 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getClientInfoProperties() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getFunctions(String string, String string1, String string2)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getFunctionColumns(String string, String string1, String string2,
             String string3)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public ResultSet getPseudoColumns(String string, String string1, String string2, String string3)
             throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
@@ -1423,11 +1424,11 @@ public class XlsStreamDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public <T> T unwrap(Class<T> type) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 
     @Override
     public boolean isWrapperFor(Class<?> type) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new SQLFeatureNotSupportedException("Not supported yet.");
     }
 }

@@ -35,6 +35,7 @@ import net.sf.jsqlparser.statement.select.Values;
 
 import java.io.StringReader;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,25 +82,31 @@ public class SqlSheetParser {
             final FromItem from = select.getFromItem();
 
             if (!(from instanceof Table)) {
-                throw new SQLException("Subselects not supported on Excel sheets.");
+                throw new SQLFeatureNotSupportedException(
+                        "Subselects not supported on Excel sheets.");
             }
             if (select.getDistinct() != null) {
-                throw new SQLException("DISTINCT not supported on Excel sheets.");
+                throw new SQLFeatureNotSupportedException(
+                        "DISTINCT not supported on Excel sheets.");
             }
             if (select.getIntoTables() != null) {
-                throw new SQLException("SELECT INTO not supported on Excel sheets.");
+                throw new SQLFeatureNotSupportedException(
+                        "SELECT INTO not supported on Excel sheets.");
             }
             if (select.getHaving() != null) {
-                throw new SQLException("HAVING not supported on Excel sheets.");
+                throw new SQLFeatureNotSupportedException(
+                        "HAVING not supported on Excel sheets.");
             }
             if (select.getGroupBy() != null) {
-                throw new SQLException("GROUP BY not supported on Excel sheets.");
+                throw new SQLFeatureNotSupportedException(
+                        "GROUP BY not supported on Excel sheets.");
             }
             List<SelectItem<?>> selectItems = select.getSelectItems();
             if (selectItems == null
                     || selectItems.size() != 1
                     || !(selectItems.get(0).getExpression() instanceof AllColumns)) {
-                throw new SQLException("Only 'SELECT *' is supported on Excel sheets");
+                throw new SQLFeatureNotSupportedException(
+                        "Only 'SELECT *' is supported on Excel sheets");
             }
             return new SelectStarStatement() {
                 public String getTable() {
@@ -150,7 +157,7 @@ public class SqlSheetParser {
                 names.add(prepareColumnIdentifier(stripUnderscores(cd.getColumnName())));
             }
             if (!(insert.getSelect() instanceof Values)) {
-                throw new SQLException(
+                throw new SQLFeatureNotSupportedException(
                         "INSERT must have a VALUES clause and sub-selects are not supported with excel sheets");
             }
             Values valuesClause = insert.getValues();
