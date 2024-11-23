@@ -62,6 +62,7 @@ public class XlsStreamResultSet implements ResultSet {
     Iterator<Row> iterator;
     Row row = null;
     int rowNum = 0;
+    private boolean closed;
 
     public XlsStreamResultSet(Sheet sheet,
             int firstSheetRowOffset, int firstSheetColOffset)
@@ -662,20 +663,20 @@ public class XlsStreamResultSet implements ResultSet {
     }
 
     public void close() throws SQLException {
-        // isClosed = true;
+        if (closed) {
+            return;
+        }
+        closed = true;
 
         // help the GC by nulling all objects
-        // workbook = null;
-        // evaluator = null;
-        // sheet = null;
-        // metadata = null;
-        // dateStyle = null;
-        //
-        // if (statement != null && !statement.isClosed() && statement.isCloseOnCompletion()) {
-        // statement.close();
-        // }
-        //
-        // statement = null;
+        iterator = null;
+        row = null;
+
+        if (statement != null && !statement.isClosed() && statement.isCloseOnCompletion()) {
+            statement.close();
+        }
+
+        statement = null;
     }
 
     public void deleteRow() throws SQLException {
@@ -861,7 +862,7 @@ public class XlsStreamResultSet implements ResultSet {
     }
 
     public boolean isClosed() throws SQLException {
-        return false;
+        return closed;
     }
 
     public void updateNString(int columnIndex, String nString) throws SQLException {

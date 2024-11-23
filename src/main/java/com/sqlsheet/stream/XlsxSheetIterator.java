@@ -13,6 +13,7 @@
  */
 package com.sqlsheet.stream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
@@ -49,6 +50,7 @@ public class XlsxSheetIterator extends AbstractXlsSheetIterator {
     private static final MathContext CTX_NN_15_EVEN = new MathContext(15, RoundingMode.HALF_EVEN);
 
     OPCPackage xlsxPackage;
+    InputStream stream;
     XMLEventReader reader;
     StylesTable styles;
     ReadOnlySharedStringsTable strings;
@@ -69,7 +71,7 @@ public class XlsxSheetIterator extends AbstractXlsSheetIterator {
             // Find appropriate sheet
             XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
             while (iter.hasNext()) {
-                InputStream stream = iter.next();
+                stream = iter.next();
                 String currentSheetName = iter.getSheetName();
                 String quotedSheetName = "\"" + currentSheetName + "\"";
                 if (currentSheetName.equalsIgnoreCase(getSheetName())
@@ -82,6 +84,8 @@ public class XlsxSheetIterator extends AbstractXlsSheetIterator {
                         processNextEvent();
                     }
                     processNextRecords();
+                } else {
+                    IOUtils.closeQuietly(stream);
                 }
             }
         } catch (Exception e) {
@@ -102,16 +106,16 @@ public class XlsxSheetIterator extends AbstractXlsSheetIterator {
     }
 
     @Override
-    protected void onClose() throws SQLException {
+    protected void onClose() {
         try {
-            if (xlsxPackage != null) {
-                xlsxPackage.close();
-            }
             if (reader != null) {
                 reader.close();
             }
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage(), e);
+        } catch (XMLStreamException e) {
+            // not much we can do here
+        } finally {
+            IOUtils.closeQuietly(stream);
+            IOUtils.closeQuietly(xlsxPackage);
         }
     }
 

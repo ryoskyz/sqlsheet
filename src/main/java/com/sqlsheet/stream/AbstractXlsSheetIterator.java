@@ -52,14 +52,18 @@ public abstract class AbstractXlsSheetIterator
 
     protected abstract void processNextRecords() throws SQLException;
 
-    protected abstract void onClose() throws SQLException;
+    protected abstract void onClose();
 
     public Iterator<List<CellValueHolder>> iterator() {
         return this;
     }
 
     public boolean hasNext() {
-        return getRowValues().get(getCurrentIteratorRowIndex() + 1) != null;
+        boolean hasNext = getRowValues().get(getCurrentIteratorRowIndex() + 1) != null;
+        if (!hasNext) {
+            onClose();
+        }
+        return hasNext;
     }
 
     public List<CellValueHolder> next() {
@@ -72,6 +76,7 @@ public abstract class AbstractXlsSheetIterator
                 processNextRecords();
             }
         } catch (SQLException e) {
+            onClose();
             throw new RuntimeException(e.getMessage(), e);
         }
         return getRowValues().get(getCurrentIteratorRowIndex());

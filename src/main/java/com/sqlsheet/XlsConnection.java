@@ -13,12 +13,14 @@
  */
 package com.sqlsheet;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.VFS;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -51,14 +53,15 @@ class XlsConnection implements Connection {
     private static final Logger LOGGER = Logger.getLogger(XlsConnection.class.getName());
     private final Properties info;
     protected Workbook workbook;
-    protected FileObject saveFile;
+    protected URL saveFile;
+    private boolean closed;
     private boolean writeRequired;
 
     XlsConnection(Workbook workbook, Properties info) {
         this(workbook, null, info);
     }
 
-    XlsConnection(Workbook workbook, FileObject saveFile, Properties info) {
+    XlsConnection(Workbook workbook, URL saveFile, Properties info) {
         if (workbook == null) {
             throw new IllegalArgumentException();
         }
@@ -95,14 +98,22 @@ class XlsConnection implements Connection {
     }
 
     public void close() throws SQLException {
-        if (saveFile == null || !writeRequired) {
+        if (closed) {
             return;
         }
-        try (OutputStream outputStream =
-                new BufferedOutputStream(saveFile.getContent().getOutputStream())) {
+        if (saveFile == null || !writeRequired) {
+            IOUtils.closeQuietly(workbook);
+            closed = true;
+            return;
+        }
+        try (FileObject fileObject = VFS.getManager().resolveFile(saveFile);
+                OutputStream outputStream = fileObject.getContent().getOutputStream()) {
             workbook.write(outputStream);
         } catch (IOException exception) {
             throw new SQLException("Error while persisting changes.", exception);
+        } finally {
+            IOUtils.closeQuietly(workbook);
+            closed = true;
         }
     }
 
@@ -118,7 +129,7 @@ class XlsConnection implements Connection {
 
     @Override
     public boolean isClosed() {
-        return false;
+        return closed;
     }
 
     @Override

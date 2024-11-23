@@ -36,6 +36,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -73,19 +74,23 @@ public class XlsPreparedStatement extends XlsStatement implements PreparedStatem
     }
 
     public boolean execute() throws SQLException {
-        this.resultSet = executeQuery();
-        if (closeOnCompletion) {
-            resultSet.close();
+        try (ResultSet rs = executeQuery()) {
+            return rs != null;
+        } finally {
+            if (closeOnCompletion) {
+                close();
+            }
         }
-        return true;
     }
 
     public int executeUpdate() throws SQLException {
-        this.resultSet = executeQuery();
-        if (closeOnCompletion) {
-            resultSet.close();
+        try (ResultSet rs = executeQuery()) {
+            return rs != null ? 1 : 0;
+        } finally {
+            if (closeOnCompletion) {
+                close();
+            }
         }
-        return -1;
     }
 
     public ResultSet executeQuery() throws SQLException {
@@ -128,7 +133,7 @@ public class XlsPreparedStatement extends XlsStatement implements PreparedStatem
                         }
                     });
         }
-        throw new IllegalStateException(
+        throw new SQLFeatureNotSupportedException(
                 "Execute Query Exception: " + statement.getClass().getName());
     }
 

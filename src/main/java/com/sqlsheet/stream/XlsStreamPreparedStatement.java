@@ -35,6 +35,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -84,18 +85,17 @@ public class XlsStreamPreparedStatement extends XlsStreamStatement implements Pr
     }
 
     public boolean execute() throws SQLException {
-        ResultSet rs = executeQuery();
-        if (closeOnCompletion) {
-            rs.close();
+        try (ResultSet rs = executeQuery()) {
+            return rs != null;
+        } finally {
+            if (closeOnCompletion) {
+                close();
+            }
         }
-        return true;
     }
 
     public int executeUpdate() throws SQLException {
-        ResultSet rs = executeQuery();
-        if (closeOnCompletion) {
-            rs.close();
-        }
+        nyi();
         return -1;
     }
 
@@ -106,7 +106,7 @@ public class XlsStreamPreparedStatement extends XlsStreamStatement implements Pr
         if (statement instanceof SelectStarStatement) {
             return super.doSelect((SelectStarStatement) statement);
         }
-        throw new IllegalStateException(
+        throw new SQLFeatureNotSupportedException(
                 "Execute Query Exception: " + statement.getClass().getName());
     }
 

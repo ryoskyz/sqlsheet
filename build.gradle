@@ -34,6 +34,7 @@ dependencies {
     api 'org.apache.poi:poi:+'
     api 'org.apache.poi:poi-ooxml:+'
     api 'com.github.pjfanning:excel-streaming-reader:+'
+    implementation 'commons-io:commons-io:+'
     implementation 'org.apache.commons:commons-vfs2:+'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.+'
@@ -42,7 +43,6 @@ dependencies {
 
     testImplementation 'com.javaforge.scriptella:scriptella-core:1.1'
     testImplementation 'com.javaforge.scriptella:scriptella-drivers:1.1'
-    testImplementation 'commons-io:commons-io:+'
     testImplementation 'org.codehaus.janino:janino:3.1.0'
     testImplementation 'de.vandermeer:asciitable:0.3.2'
 

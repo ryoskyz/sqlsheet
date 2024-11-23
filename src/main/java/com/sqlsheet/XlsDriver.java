@@ -25,6 +25,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -174,12 +175,11 @@ public class XlsDriver implements java.sql.Driver {
         String strippedUrlStr = questionIndex >= 0
                 ? url.substring(0, questionIndex)
                 : url;
-        try {
-            String workbookUriStr = strippedUrlStr.substring(URL_SCHEME.length());
-            workbookUriStr = resolveHomeUriStr(workbookUriStr);
-            workbookUriStr =
-                    CLASSPATH_OR_RESOURCE_PATTERN.matcher(workbookUriStr).replaceFirst("res:");
-            FileObject file = VFS.getManager().resolveFile(workbookUriStr);
+        String workbookUriStr = strippedUrlStr.substring(URL_SCHEME.length());
+        workbookUriStr = resolveHomeUriStr(workbookUriStr);
+        workbookUriStr =
+                CLASSPATH_OR_RESOURCE_PATTERN.matcher(workbookUriStr).replaceFirst("res:");
+        try (FileObject file = VFS.getManager().resolveFile(workbookUriStr)) {
             // If streaming requested for read
             if (has(info, READ_STREAMING)) {
                 return new XlsStreamConnection(file.getURL(), info);
@@ -188,15 +188,16 @@ public class XlsDriver implements java.sql.Driver {
                 boolean xlsx = XLSX_PATTERN.matcher(file.getName().getExtension()).matches();
                 if (has(info, WRITE_STREAMING)) {
                     if (xlsx) {
-                        return new XlsConnection(getOrCreateXlsxStream(file), file, info);
+                        return new XlsConnection(getOrCreateXlsxStream(file), file.getURL(), info);
                     }
-                    LOGGER.warning(WRITE_STREAMING + " is not supported on " + file.getPath());
+                    LOGGER.warning(WRITE_STREAMING + " is not supported on " + strippedUrlStr);
                 }
-                return new XlsConnection(getOrCreateWorkbook(file, xlsx), file, info);
+                return new XlsConnection(getOrCreateWorkbook(file, xlsx), file.getURL(), info);
             } else {
-                // If plain url provided
-                return new XlsConnection(WorkbookFactory.create(file.getContent().getInputStream()),
-                        info);
+                try (InputStream in = file.getContent().getInputStream()) {
+                    // If plain url provided
+                    return new XlsConnection(WorkbookFactory.create(in), info);
+                }
             }
         } catch (Exception e) {
             throw new SQLException(e.getMessage(), e);
@@ -214,25 +215,31 @@ public class XlsDriver implements java.sql.Driver {
     private SXSSFWorkbook getOrCreateXlsxStream(FileObject file) throws IOException {
         if (!file.exists() && VFS.getManager().canCreateFileSystem(file)
                 || file.getContent().getSize() == 0) {
-            Workbook workbook = new XSSFWorkbook();
-            flushWorkbook(workbook, file);
+            try (Workbook workbook = new XSSFWorkbook()) {
+                flushWorkbook(workbook, file);
+            }
         } else {
             LOGGER.warning(
                     "File " + file.getPath() + " is not empty, and will parsed to memory!");
         }
-        return new SXSSFWorkbook(new XSSFWorkbook(file.getContent().getInputStream()), 1000, false);
+        try (InputStream in = file.getContent().getInputStream()) {
+            return new SXSSFWorkbook(new XSSFWorkbook(in), 1000, false);
+        }
     }
 
     private Workbook getOrCreateWorkbook(FileObject file, boolean xlsx) throws IOException {
         if (!file.exists() && VFS.getManager().canCreateFileSystem(file)
                 || file.getContent().getSize() == 0) {
-            Workbook workbook = xlsx ? new XSSFWorkbook() : new HSSFWorkbook();
-            flushWorkbook(workbook, file);
+            try (Workbook workbook = xlsx ? new XSSFWorkbook() : new HSSFWorkbook()) {
+                flushWorkbook(workbook, file);
+            }
         }
         org.apache.poi.openxml4j.util.ZipInputStreamZipEntrySource
                 .setThresholdBytesForTempFiles(100_000_000);
         IOUtils.setByteArrayMaxOverride(500_000_000);
-        return WorkbookFactory.create(file.getContent().getInputStream());
+        try (InputStream in = file.getContent().getInputStream()) {
+            return WorkbookFactory.create(in);
+        }
     }
 
     private void flushWorkbook(Workbook workbook, FileObject file) throws IOException {

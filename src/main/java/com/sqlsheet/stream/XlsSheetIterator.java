@@ -13,6 +13,7 @@
  */
 package com.sqlsheet.stream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
@@ -338,14 +339,9 @@ public class XlsSheetIterator extends AbstractXlsSheetIterator implements HSSFLi
     }
 
     @Override
-    protected void onClose() throws SQLException {
-        try {
-            if (fileSystem != null) {
-                fileSystem.close();
-            }
-        } catch (IOException e) {
-            throw new SQLException(e.getMessage(), e);
-        }
+    protected void onClose() {
+        IOUtils.closeQuietly(stubWorkbook);
+        IOUtils.closeQuietly(fileSystem);
     }
 
     static class PublicMorozoffHSSFRequest extends HSSFRequest {

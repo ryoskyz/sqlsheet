@@ -43,6 +43,7 @@ public class XlsStreamStatement implements Statement {
     private final Map<String, XlsStreamResultSet> sheet2rs = new HashMap<>();
     private SqlSheetParser parser;
     private boolean closeOneCompletion = false;
+    private boolean closed;
 
     public XlsStreamStatement(XlsStreamConnection c) {
         if (c == null) {
@@ -56,22 +57,27 @@ public class XlsStreamStatement implements Statement {
     }
 
     public void close() throws SQLException {
-        // nothing
+        if (closed) {
+            return;
+        }
+        sheet2rs.clear();
+        parser = null;
+
+        closed = true;
     }
 
     public boolean execute(String sql) throws SQLException {
-        ResultSet rs = executeQuery(sql);
-        if (closeOneCompletion) {
-            rs.close();
+        try (ResultSet rs = executeQuery(sql)) {
+            return rs != null;
+        } finally {
+            if (closeOneCompletion) {
+                close();
+            }
         }
-        return false;
     }
 
     public int executeUpdate(String sql) throws SQLException {
-        ResultSet rs = executeQuery(sql);
-        if (closeOneCompletion) {
-            rs.close();
-        }
+        nyi();
         return -1;
     }
 
@@ -80,7 +86,7 @@ public class XlsStreamStatement implements Statement {
         if (parsed instanceof SelectStarStatement) {
             return doSelect((SelectStarStatement) parsed);
         } else {
-            throw new IllegalStateException(parsed.getClass().getName());
+            throw new SQLFeatureNotSupportedException(parsed.getClass().getName());
         }
     }
 
@@ -102,17 +108,17 @@ public class XlsStreamStatement implements Statement {
 
     private XlsStreamResultSet findOrCreateResultSetFor(String tableName) throws SQLException {
         String sanitizedTableName = tableName.trim().toUpperCase();
-        XlsStreamResultSet out = sheet2rs.get(sanitizedTableName);
-        if (out == null) {
-            Sheet sheet = getSheetNamed(connection.getWorkBook(), sanitizedTableName);
-            out =
-                    new XlsStreamResultSet(
-                            sheet,
-                            connection.getInt(XlsDriver.HEADLINE, DEFAULT_HEADLINE),
-                            connection.getInt(XlsDriver.FIRST_COL, DEFAULT_FIRST_COL));
-            out.statement = this;
-            sheet2rs.put(sanitizedTableName, out);
+        XlsStreamResultSet rs = sheet2rs.get(sanitizedTableName);
+        if (rs != null && !rs.isClosed()) {
+            return rs;
         }
+        Sheet sheet = getSheetNamed(connection.getWorkBook(), sanitizedTableName);
+        XlsStreamResultSet out = new XlsStreamResultSet(
+                sheet,
+                connection.getInt(XlsDriver.HEADLINE, DEFAULT_HEADLINE),
+                connection.getInt(XlsDriver.FIRST_COL, DEFAULT_FIRST_COL));
+        out.statement = this;
+        sheet2rs.put(sanitizedTableName, out);
         return out;
     }
 
@@ -271,7 +277,7 @@ public class XlsStreamStatement implements Statement {
     }
 
     public boolean isClosed() throws SQLException {
-        return false;
+        return closed;
     }
 
     public boolean isPoolable() throws SQLException {

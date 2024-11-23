@@ -105,6 +105,9 @@ public class XlsStatement implements Statement {
 
     @Override
     public void close() throws SQLException {
+        if (isClosed) {
+            return;
+        }
         sheet2rs.clear();
         parser = null;
 
@@ -116,13 +119,16 @@ public class XlsStatement implements Statement {
         ParsedStatement parsed = parse(sql);
         if (parsed instanceof DropTableStatement) {
             doDropTable((DropTableStatement) parsed);
+            return true;
         } else {
-            ResultSet resultSet = executeQuery(parsed);
-            if (isCloseOnCompletion) {
-                resultSet.close();
+            try (ResultSet rs = executeQuery(parsed)) {
+                return rs != null;
+            } finally {
+                if (isCloseOnCompletion) {
+                    close();
+                }
             }
         }
-        return true;
     }
 
     private ResultSet executeQuery(ParsedStatement parsed) throws SQLException {
@@ -133,17 +139,19 @@ public class XlsStatement implements Statement {
         } else if (parsed instanceof CreateTableStatement) {
             return doCreateTable((CreateTableStatement) parsed);
         } else {
-            throw new IllegalStateException(parsed.getClass().getName());
+            throw new SQLFeatureNotSupportedException(parsed.getClass().getName());
         }
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        ResultSet rs = executeQuery(sql);
-        if (isCloseOnCompletion) {
-            rs.close();
+        try (ResultSet rs = executeQuery(sql)) {
+            return rs != null ? 1 : 0;
+        } finally {
+            if (isCloseOnCompletion) {
+                close();
+            }
         }
-        return 1;
     }
 
     @Override
@@ -200,18 +208,18 @@ public class XlsStatement implements Statement {
 
     private XlsResultSet findOrCreateResultSetFor(String tableName) throws SQLException {
         String sanitizedTableName = tableName.trim().toUpperCase();
-        XlsResultSet out = sheet2rs.get(sanitizedTableName);
-        if (out == null) {
-            Sheet sheet = getSheetNamed(connection.getWorkBook(), sanitizedTableName);
-            out =
-                    new XlsResultSet(
-                            connection.getWorkBook(),
-                            sheet,
-                            connection.getInt(XlsDriver.HEADLINE, DEFAULT_HEADLINE),
-                            connection.getInt(XlsDriver.FIRST_COL, DEFAULT_FIRST_COL));
-            out.statement = this;
-            sheet2rs.put(sanitizedTableName, out);
+        XlsResultSet rs = sheet2rs.get(sanitizedTableName);
+        if (rs != null && !rs.isClosed()) {
+            return rs;
         }
+        Sheet sheet = getSheetNamed(connection.getWorkBook(), sanitizedTableName);
+        XlsResultSet out = new XlsResultSet(
+                connection.getWorkBook(),
+                sheet,
+                connection.getInt(XlsDriver.HEADLINE, DEFAULT_HEADLINE),
+                connection.getInt(XlsDriver.FIRST_COL, DEFAULT_FIRST_COL));
+        out.statement = this;
+        sheet2rs.put(sanitizedTableName, out);
         return out;
     }
 

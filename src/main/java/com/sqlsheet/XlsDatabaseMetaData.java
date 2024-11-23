@@ -16,6 +16,8 @@ package com.sqlsheet;
 
 import com.hrakaroo.glob.GlobPattern;
 import com.hrakaroo.glob.MatchingEngine;
+
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -690,7 +692,7 @@ public class XlsDatabaseMetaData implements DatabaseMetaData {
                         '_',
                         GlobPattern.HANDLE_ESCAPES);
 
-        String fileName = connection.saveFile.getName().getBaseName();
+        String fileName = FilenameUtils.getBaseName(connection.saveFile.getFile());
 
         if ((schemaPattern == null || schemaMatcher.matches(fileName))
                 && (types == null || Arrays.asList(types).contains("TABLE"))) {
@@ -722,7 +724,7 @@ public class XlsDatabaseMetaData implements DatabaseMetaData {
                         new Object[] {"TABLE_SCHEM", String.class},
                         new Object[] {"TABLE_CATALOG", String.class});
 
-        String fileName = connection.saveFile.getName().getBaseName();
+        String fileName = FilenameUtils.getBaseName(connection.saveFile.getFile());
         resultSet.addRow(fileName, null);
 
         return resultSet;
@@ -774,7 +776,7 @@ public class XlsDatabaseMetaData implements DatabaseMetaData {
                         new Object[] {"IS_AUTOINCREMENT", String.class},
                         new Object[] {"IS_GENERATEDCOLUMN", String.class});
 
-        String fileName = connection.saveFile.getName().getBaseName();
+        String fileName = FilenameUtils.getBaseName(connection.saveFile.getFile());
 
         int firstSheetRowOffset = connection.getInt(XlsDriver.HEADLINE, DEFAULT_HEADLINE);
         int firstSheetColOffset = connection.getInt(XlsDriver.FIRST_COL, DEFAULT_FIRST_COL);

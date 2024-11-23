@@ -93,6 +93,9 @@ public class ResultSetImpl implements ResultSet {
 
     @Override
     public void close() throws SQLException {
+        if (isClosed) {
+            return;
+        }
         columnNames.clear();
         columnClasses.clear();
         rowData.clear();

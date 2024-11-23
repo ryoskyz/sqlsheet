@@ -1053,6 +1053,9 @@ public class XlsResultSet implements ResultSet {
 
     @Override
     public void close() throws SQLException {
+        if (isClosed) {
+            return;
+        }
         isClosed = true;
 
         // help the GC by nulling all objects

@@ -15,6 +15,7 @@ package com.sqlsheet.stream;
 
 import com.github.pjfanning.xlsx.StreamingReader;
 import com.sqlsheet.XlsDriver;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.IOException;
@@ -55,6 +56,7 @@ public class XlsStreamConnection implements Connection {
     public URL xlsFile;
     public Workbook workbook = null;
     public Properties info;
+    private boolean closed;
 
     public XlsStreamConnection(URL xlsFile, Properties info) throws IOException {
         this.xlsFile = xlsFile;
@@ -99,13 +101,11 @@ public class XlsStreamConnection implements Connection {
     }
 
     public void close() throws SQLException {
-        if (workbook != null) {
-            try {
-                workbook.close();
-            } catch (IOException ignore) {
-                // not much we can do here
-            }
+        if (closed) {
+            return;
         }
+        IOUtils.closeQuietly(workbook);
+        closed = true;
     }
 
     public boolean getAutoCommit() {
@@ -117,7 +117,7 @@ public class XlsStreamConnection implements Connection {
     }
 
     public boolean isClosed() {
-        return false;
+        return closed;
     }
 
     public boolean isReadOnly() {
